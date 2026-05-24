@@ -150,7 +150,7 @@ After adding a domain, update:
 
 | Issue | Fix |
 |-------|-----|
-| **`prop-haven-api` deploy failed** | Open the failed deploy → **Logs**. Common fixes: (1) push latest code with updated `render.yaml`, (2) confirm `DATABASE_URL` is linked to the API service, (3) set **Build command** to `NPM_CONFIG_PRODUCTION=false npm install && npx prisma generate && npm run build` and **Release command** to `npx prisma db push --skip-generate` in the Render dashboard if not using Blueprint |
+| **`prop-haven-api` deploy failed** | Open the failed deploy → **Logs**. Common fixes: (1) push latest code with updated `render.yaml`, (2) confirm `DATABASE_URL` is linked to the API service, (3) set **Build command** to `NPM_CONFIG_PRODUCTION=false npm install && npx prisma generate && npm run build` and **Pre-Deploy command** to `npx prisma db push --skip-generate` (not `releaseCommand` — that field does not exist in Blueprints) |
 | API CORS error | `FRONTEND_URL` must exactly match the browser URL (scheme + host, no trailing slash) |
 | Empty property list | Run `npm run db:seed` on the API; approve listings in admin |
 | Buy/Rent payment fails | Set Razorpay keys on the API |
