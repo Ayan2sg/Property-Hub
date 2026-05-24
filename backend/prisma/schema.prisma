@@ -1,0 +1,92 @@
+
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Property {
+  id             String                 @id @default(cuid())
+  title          String
+  price          String
+  location       String
+  beds           Int
+  baths          Int
+  sqft           String
+  image          String
+  type           PropertyType
+  status         PropertyStatus         @default(AVAILABLE)
+  approvalStatus ListingApprovalStatus  @default(PENDING)
+  featured       Boolean                @default(false)
+  amenities      String                 // JSON string of amenities array
+  availableFrom  String?
+  listedById     String?
+  listedBy       User?                  @relation(fields: [listedById], references: [id], onDelete: SetNull)
+  createdAt      DateTime               @default(now())
+  updatedAt      DateTime               @updatedAt
+  payments       Payment[]
+
+  @@map("properties")
+}
+
+enum PropertyType {
+  SALE
+  RENT
+}
+
+enum PropertyStatus {
+  AVAILABLE
+  SOLD
+  RENTED
+}
+
+enum ListingApprovalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Role {
+  USER
+  ADMIN
+}
+
+model User {
+  id               String     @id @default(cuid())
+  name             String
+  email            String     @unique
+  passwordHash     String
+  role             Role       @default(USER)
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  payments         Payment[]
+  listedProperties Property[]
+}
+
+enum PaymentStatus {
+  CREATED
+  VERIFIED
+  FAILED
+}
+
+model Payment {
+  id               String        @id @default(cuid())
+  userId           String
+  propertyId       String
+  razorpayOrderId  String        @unique
+  razorpayPaymentId String?      @unique
+  razorpaySignature String?
+  amount           Int
+  currency         String
+  status           PaymentStatus @default(CREATED)
+  verifiedAt       DateTime?
+  createdAt        DateTime      @default(now())
+  updatedAt        DateTime      @updatedAt
+
+  user             User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  property         Property      @relation(fields: [propertyId], references: [id], onDelete: Cascade)
+}

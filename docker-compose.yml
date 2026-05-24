@@ -1,0 +1,16 @@
+# Local PostgreSQL for development (matches production database type)
+services:
+  db:
+    image: postgres:16-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: prophaven
+      POSTGRES_PASSWORD: prophaven
+      POSTGRES_DB: prophaven
+    ports:
+      - "5432:5432"
+    volumes:
+      - prophaven_pg:/var/lib/postgresql/data
+
+volumes:
+  prophaven_pg:
