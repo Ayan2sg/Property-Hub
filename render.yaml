@@ -14,8 +14,7 @@ services:
     rootDir: backend
     plan: free
     buildCommand: NPM_CONFIG_PRODUCTION=false npm install && npx prisma generate && npm run build
-    preDeployCommand: npx prisma db push --skip-generate
-    startCommand: npm start
+    startCommand: npm run start:prod
     healthCheckPath: /api/health
     envVars:
       - key: NODE_VERSION
